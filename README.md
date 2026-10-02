@@ -1,34 +1,168 @@
-# My Application README
+# Sistema de Reservas de Libros para Biblioteca
 
-- [ ] TODO Replace or update this README with instructions relevant to your application
+![Java](https://img.shields.io/badge/Java-21-orange)
+![Maven](https://img.shields.io/badge/Maven-Wrapper-blue)
+![Vaadin](https://img.shields.io/badge/Vaadin-25-00b4f0)
+![Base de datos](https://img.shields.io/badge/BD-SQL%20Server-CC2927)
+![Build](https://img.shields.io/badge/build-passing-brightgreen)
+![Licencia](https://img.shields.io/badge/licencia-ver%20LICENSE.md-green)
 
-To start the application in development mode, import it into your IDE and run the `Application` class. 
-You can also start the application from the command line by running: 
+## Resumen Ejecutivo
 
-```bash
-./mvnw
+**Problema.** La gestión manual de reservas de libros en una biblioteca dificulta saber qué usuario tiene qué libro, hasta cuándo y en qué estado se encuentra cada reserva.
+
+**Solución.** Aplicación web desarrollada en Java con Vaadin para la interfaz y JDBC para el acceso a datos. Permite administrar usuarios, libros, reservas y el detalle de cada reserva mediante operaciones CRUD completas (crear, consultar, actualizar y eliminar).
+
+**Valor del sistema.** Centraliza la información de la biblioteca, reduce errores de registro y permite consultar rápidamente el estado de las reservas y las fechas límite de devolución.
+
+## Arquitectura
+
+El proyecto sigue una arquitectura en capas:
+
+```
+Vista (Vaadin)  ->  DAO (JDBC, mapeo manual)  ->  Base de datos
+                          |
+                     Modelo (POJO)
 ```
 
-To build the application in production mode, run:
+| Capa | Paquete | Responsabilidad |
+|------|---------|-----------------|
+| Modelo | `com.example.model` | Clases POJO que representan las entidades del MER |
+| Acceso a datos | `com.example.dao` | Operaciones CRUD con JDBC y mapeo manual entre `ResultSet` y objetos |
+| Vista | `com.example.view` | Interfaces en Vaadin con formulario, botones y tabla por entidad |
+
+Estructura del proyecto:
+
+```
+proyecto-integrador-b2-2026/
+├── README.md
+├── LICENSE.md
+├── Dockerfile
+├── pom.xml
+├── mvnw
+├── mvnw.cmd
+├── docs/
+│   └── mer.png
+├── sql/
+│   └── script.sql
+└── src/main/
+    ├── frontend/
+    ├── resources/
+    └── java/com/example/
+        ├── Application.java
+        ├── MainView.java
+        ├── model/
+        ├── dao/
+        └── view/
+```
+
+## Modelo de Datos
+
+![Diagrama MER](docs/mer.png)
+
+| Entidad | Descripción | Atributos |
+|---------|-------------|-----------|
+| **Usuarios** | Personas que realizan reservas | Usuario_ID (PK), Nombre_Usuario, Email_Usuario, Tipo_Usuario |
+| **Libros** | Catálogo de la biblioteca | Libro_ID (PK), Titulo, Autor, Editorial, Categoria |
+| **Reservas** | Reserva realizada por un usuario | Reserva_ID (PK), Fecha_reserva, Usuario_ID (FK), Fecha_limite, Estado |
+| **Detalle_Reserva** | Libros incluidos en cada reserva | Reserva_ID (PK, FK), Libro_ID (PK, FK) |
+
+**Relaciones:**
+
+- Un usuario puede tener muchas reservas.
+- Una reserva puede incluir muchos libros y un libro puede estar en muchas reservas, resuelto con la tabla `Detalle_Reserva`.
+
+## Stack Tecnológico
+
+| Tecnología | Versión |
+|------------|---------|
+| Java (JDK) | 21 |
+| Maven Wrapper | Incluido en el proyecto (`mvnw`) |
+| Vaadin | 25.x |
+| SQL Server | 2022 (ajustar a la versión instalada) |
+| Driver JDBC (mssql-jdbc) | 12.x |
+| Herramienta de base de datos | SQL Server Management Studio (SSMS) |
+| IDE | VS Code |
+| Control de versiones | Git y GitHub |
+
+## Guía de Configuración
+
+### Pre-requisitos
+
+- JDK 21 o superior
+- SQL Server (Express o Developer) en ejecución
+- SQL Server Management Studio (SSMS)
+- Git
+
+No es necesario instalar Maven: el proyecto incluye Maven Wrapper.
+
+### 1. Clonar el repositorio
+
+```bash
+git clone https://github.com/USUARIO/NOMBRE-REPOSITORIO.git
+cd NOMBRE-REPOSITORIO
+```
+
+### 2. Crear la base de datos
+
+1. Abrir SQL Server Management Studio y conectarse a la instancia local.
+2. Abrir el archivo `sql/script.sql` (menú Archivo, Abrir, Archivo).
+3. Ejecutarlo con el botón **Ejecutar** o la tecla `F5`. El script crea la base de datos `biblioteca` y sus cuatro tablas.
+
+### 3. Configurar la conexión
+
+Definir las siguientes variables de entorno:
+
+| Variable | Descripción | Ejemplo |
+|----------|-------------|---------|
+| `DB_URL` | URL de conexión | `jdbc:sqlserver://localhost:1433;databaseName=biblioteca;encrypt=true;trustServerCertificate=true` |
+| `DB_USER` | Usuario de SQL Server | `sa` |
+| `DB_PASSWORD` | Contraseña | `********` |
+
+### 4. Compilar y ejecutar
+
+En Linux o macOS:
+
+```bash
+./mvnw clean install
+./mvnw spring-boot:run
+```
+
+En Windows:
+
+```bash
+mvnw.cmd clean install
+mvnw.cmd spring-boot:run
+```
+
+### 5. Abrir la aplicación
+
+Ingresar en el navegador a `http://localhost:8080`.
+
+### Compilar para producción
 
 ```bash
 ./mvnw package
 ```
 
-To build a Docker image, run:
+## Flujo de Trabajo
 
-```bash
-docker build -t my-application:latest .
-```
+El control de versiones se maneja con Git y GitHub:
 
-If you use commercial components, pass the license key as a build secret:
+- `main`: rama estable, solo recibe código probado.
+- `develop`: rama de integración.
+- `feature/<nombre>`: una rama por funcionalidad (por ejemplo `feature/crud-libros`).
+- Los cambios se integran a `develop` mediante pull requests.
+- Los mensajes de commit describen brevemente el cambio realizado.
 
-```bash
-docker build --secret id=proKey,src=$HOME/.vaadin/proKey .
-```
+## Licencia y Créditos
 
-## Getting Started
+Proyecto distribuido bajo la licencia indicada en el archivo [LICENSE.md](LICENSE.md).
 
-The [Quick Start](https://vaadin.com/docs/v25/getting-started/quick-start) tutorial helps you get started with Vaadin in 
-around 10 minutes. This tutorial walks you through building a simple application, introducing the core concepts along 
-the way.
+| Integrante | Rol |
+|------------|-----|
+| Juan Esteban Rave| Capa de persistencia (POJO y DAO) |
+| Juan Esteban Ceballos | Vistas en Vaadin |
+| Diego Tobon | Base de datos y documentación |
+
+Proyecto académico desarrollado para el curso de [desarrollo de software] - [Cesde-bello].
