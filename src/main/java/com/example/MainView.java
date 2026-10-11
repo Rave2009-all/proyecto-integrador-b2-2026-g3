@@ -14,7 +14,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 
-@PageTitle("Gestión CRUD - 2 Entidades")
+@PageTitle("Reserva de libros")
 @Route("")
 public class MainView extends VerticalLayout {
 
@@ -23,13 +23,13 @@ public class MainView extends VerticalLayout {
         setPadding(true);
         setSpacing(true);
 
-        H2 titulo = new H2("Gestión de Entidades (CRUD)");
+        H2 titulo = new H2("Sistema de reserva de libros");
 
         TabSheet tabSheet = new TabSheet();
         tabSheet.setWidthFull();
 
-        tabSheet.add("Entidad 1", crearSeccionEntidad1());
-        tabSheet.add("Entidad 2", crearSeccionEntidad2());
+        tabSheet.add("Libros", crearSeccionEntidad1());
+        tabSheet.add("Usuario", crearSeccionEntidad2());
 
         add(titulo, tabSheet);
     }
@@ -39,34 +39,38 @@ public class MainView extends VerticalLayout {
         VerticalLayout layout = new VerticalLayout();
         layout.setPadding(false);
 
-        TextField idField = new TextField("ID");
-        TextField nombreField = new TextField("Nombre");
-        TextField descripcionField = new TextField("Descripción");
+        TextField idField = new TextField("ID del libro");
+        TextField tituloField = new TextField("Titulo del libro");
+        TextField autorField = new TextField(" Autor");
+        TextField editorialField = new TextField("Editorial");
+        TextField categoriaField = new TextField("Categoria");
 
-        FormLayout form = new FormLayout(idField, nombreField, descripcionField);
+        FormLayout form = new FormLayout(idField, tituloField, autorField, editorialField, categoriaField);
 
         Button btnCrear = new Button("Crear", e -> 
-            Notification.show("Entidad 1 - Crear: " + nombreField.getValue())
+            Notification.show("Libro 1 - Crear: " + tituloField.getValue())
         );
         btnCrear.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button btnConsultar = new Button("Consultar", e -> 
-            Notification.show("Entidad 1 - Consultar ID: " + idField.getValue())
+            Notification.show("Libro 1 - Consultar ID: " + idField.getValue())
         );
 
         Button btnActualizar = new Button("Actualizar", e -> 
-            Notification.show("Entidad 1 - Actualizar ID: " + idField.getValue())
+            Notification.show("Libro 1 - Actualizar ID: " + idField.getValue())
         );
 
         Button btnEliminar = new Button("Eliminar", e -> 
-            Notification.show("Entidad 1 - Eliminar ID: " + idField.getValue())
+            Notification.show("Libro 1 - Eliminar ID: " + idField.getValue())
         );
         btnEliminar.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         Button btnLimpiar = new Button("Limpiar", e -> {
             idField.clear();
-            nombreField.clear();
-            descripcionField.clear();
+            tituloField.clear();
+            autorField.clear();
+            editoriallField.clear();
+            categoriaField.clear();
         });
 
         HorizontalLayout acciones = new HorizontalLayout(
@@ -75,9 +79,11 @@ public class MainView extends VerticalLayout {
         acciones.getStyle().set("flex-wrap", "wrap");
 
         Grid<String[]> grid = new Grid<>();
-        grid.addColumn(row -> row[0]).setHeader("ID").setAutoWidth(true);
-        grid.addColumn(row -> row[1]).setHeader("Nombre").setAutoWidth(true);
-        grid.addColumn(row -> row[2]).setHeader("Descripción").setAutoWidth(true);
+        grid.addColumn(row -> row[0]).setHeader("ID del libro").setAutoWidth(true);
+        grid.addColumn(row -> row[1]).setHeader("Titulo del libro").setAutoWidth(true);
+        grid.addColumn(row -> row[2]).setHeader("Autor").setAutoWidth(true);
+        grid.addColumn(row -> row[3]).setHeader("Editorial").setAutoWidth(true);
+        grid.addColumn(row -> row[4]).setHeader("Categoria").setAutoWidth(true);
 
         layout.add(form, acciones, grid);
         return layout;
@@ -88,34 +94,36 @@ public class MainView extends VerticalLayout {
         VerticalLayout layout = new VerticalLayout();
         layout.setPadding(false);
 
-        TextField idField = new TextField("Código / ID");
-        TextField tituloField = new TextField("Título");
-        TextField categoriaField = new TextField("Categoría");
+        TextField idField = new TextField("ID del usuario");
+        TextField nombreField = new TextField("Nombre del usuario");
+        TextField emailField = new TextField("Correo electronico");
+        TextField tipoUsuarioField = new TextField("Tipo de usuario");
 
-        FormLayout form = new FormLayout(idField, tituloField, categoriaField);
+        FormLayout form = new FormLayout(idField, nombreField, emailField, tipoUsuarioField);
 
         Button btnCrear = new Button("Crear", e -> 
-            Notification.show("Entidad 2 - Crear: " + tituloField.getValue())
+            Notification.show("Usuario 2 - Crear: " + nombreField.getValue())
         );
         btnCrear.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         Button btnConsultar = new Button("Consultar", e -> 
-            Notification.show("Entidad 2 - Consultar Código: " + idField.getValue())
+            Notification.show("Usuario 2 - Consultar Código: " + idField.getValue())
         );
 
         Button btnActualizar = new Button("Actualizar", e -> 
-            Notification.show("Entidad 2 - Actualizar Código: " + idField.getValue())
+            Notification.show("Usuario 2 - Actualizar Código: " + idField.getValue())
         );
 
         Button btnEliminar = new Button("Eliminar", e -> 
-            Notification.show("Entidad 2 - Eliminar Código: " + idField.getValue())
+            Notification.show("Usuario 2 - Eliminar Código: " + idField.getValue())
         );
         btnEliminar.addThemeVariants(ButtonVariant.LUMO_ERROR);
 
         Button btnLimpiar = new Button("Limpiar", e -> {
             idField.clear();
-            tituloField.clear();
-            categoriaField.clear();
+            nombreField.clear();
+            emailField.clear();
+            tipoUsuarioField.clear();
         });
 
         HorizontalLayout acciones = new HorizontalLayout(
@@ -124,9 +132,10 @@ public class MainView extends VerticalLayout {
         acciones.getStyle().set("flex-wrap", "wrap");
 
         Grid<String[]> grid = new Grid<>();
-        grid.addColumn(row -> row[0]).setHeader("Código / ID").setAutoWidth(true);
-        grid.addColumn(row -> row[1]).setHeader("Título").setAutoWidth(true);
-        grid.addColumn(row -> row[2]).setHeader("Categoría").setAutoWidth(true);
+        grid.addColumn(row -> row[0]).setHeader("ID del usuario").setAutoWidth(true);
+        grid.addColumn(row -> row[1]).setHeader("Nombre del usuario").setAutoWidth(true);
+        grid.addColumn(row -> row[2]).setHeader("Corro electronico").setAutoWidth(true);
+        grid.addColumn(row -> row[3]).setHeader("Tipo de usuario").setAutoWidth(true);
 
         layout.add(form, acciones, grid);
         return layout;
